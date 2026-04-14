@@ -1,0 +1,46 @@
+#!/bin/bash
+# fsociety-core — Encrypted Network Protocol
+
+CONF="/etc/amnezia/amneziawg/fsociety.conf"
+NS="fsociety_mask"
+IFACE="f_soc0"
+
+if [ ! -f "$CONF" ]; then
+    echo "[-] [ ERROR ] Config file not found at $CONF"
+    echo "[-] [ ERROR ] The network cannot be initialized."
+    exit 1
+fi
+
+ADDR=$(grep -i '^Address' $CONF | cut -d'=' -f2 | tr -d ' ' | awk -F',' '{print $1}')
+DNS_SRV=$(grep -i '^DNS' $CONF | cut -d'=' -f2 | tr -d ' ' | awk -F',' '{print $1}')
+
+if [ -z "$DNS_SRV" ]; then
+    DNS_SRV="1.1.1.1"
+fi
+
+ip netns delete $NS 2>/dev/null || true
+
+echo "[*] [ INIT ] Initializing fsociety masking protocol..."
+ip netns add $NS
+
+echo "[*] [ REROUTE ] Redirecting DNS queries to $DNS_SRV..."
+mkdir -p /etc/netns/$NS
+echo "nameserver $DNS_SRV" > /etc/netns/$NS/resolv.conf
+
+echo "[*] [ INTERFACE ] Creating phantom interface ($IFACE)..."
+ip link add $IFACE type amneziawg
+ip link set $IFACE netns $NS
+
+echo "[*] [ ENCRYPTION ] Injecting payload..."
+TMP_CONF=$(mktemp)
+sed '/^Address/d; /^DNS/d; /^MTU/d; /^Table/d; /^PreUp/d; /^PostUp/d; /^PreDown/d; /^PostDown/d' $CONF > $TMP_CONF
+ip netns exec $NS awg setconf $IFACE $TMP_CONF
+rm $TMP_CONF
+
+echo "[*] [ NETWORK ] Bringing interface online (IP: $ADDR)..."
+ip -n $NS addr add $ADDR dev $IFACE
+ip -n $NS link set $IFACE up
+ip -n $NS link set lo up
+ip -n $NS route add default dev $IFACE
+
+echo "[+] [ SUCCESS ] fsociety network is ACTIVE. We are finally awake."

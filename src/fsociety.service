@@ -1,0 +1,13 @@
+[Unit]
+Description=fsociety_vpn — Encrypted Network Protocol
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/fsociety-core
+ExecStop=/usr/bin/ip netns delete fsociety_mask
+
+[Install]
+WantedBy=multi-user.target

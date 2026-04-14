@@ -1,0 +1,35 @@
+#!/bin/bash
+# fsociety — Gateway Interface v1.5
+
+if [ -z "$1" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]; then
+    cat << 'EOF'
+Usage: fsociety <command> [arguments...]
+
+Description:
+  Runs the specified application inside the isolated AmneziaWG VPN namespace.
+  Any [arguments...] provided will be passed directly to the target application.
+
+Options:
+  -h, --help    Show this help message and exit.
+
+Examples:
+  fsociety Telegram                  # Runs Telegram through the secure tunnel
+  fsociety curl ifconfig.me          # Checks the IP address of the VPN tunnel
+  fsociety firefox -P VPN            # Runs Firefox with a specific browser profile named "VPN"
+EOF
+    exit 1
+fi
+
+REAL_USER=${FSOCIETY_USER:-${SUDO_USER:-$USER}}
+
+TARGET_CMD=$1
+shift 
+
+CMD_PATH=$(command -v "$TARGET_CMD")
+
+if [ -z "$CMD_PATH" ]; then
+    echo "[-] fsociety error: Target '$TARGET_CMD' does not exist in PATH."
+    exit 1
+fi
+
+ip netns exec fsociety_mask sudo -E -u "$REAL_USER" "$CMD_PATH" "$@"
