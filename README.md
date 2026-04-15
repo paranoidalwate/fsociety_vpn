@@ -61,13 +61,13 @@ fsociety firefox -P VPN
 
 ```text
 fsociety_vpn/
-└── src/                 # Исходный код проекта
-    ├── fsociety         # CLI-обертка: перехват пользователя и запуск программ
-    ├── fsociety-core    # Ядро системы: создание namespaces и маршрутизация
-    ├── fsociety.service # Конфигурация systemd для фоновой работы
-    └── install.sh       # Скрипт автоматического развертывания
+├── src/                 # Исходный код проекта
+│   ├── fsociety         # CLI-обертка: перехват пользователя и запуск программ
+│   ├── fsociety-core    # Ядро системы: создание namespaces и маршрутизация
+│   ├── fsociety.service # Конфигурация systemd для фоновой работы
+│   └── install.sh       # Скрипт автоматического развертывания
 ├── LICENSE              # GNU General Public License v3.0
-├── README.md            # Данная документация
+└── README.md            # Данная документация
 ```
 
 ## Лицензия
