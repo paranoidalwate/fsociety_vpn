@@ -18,7 +18,7 @@ Society is a lie. Control is an illusion."
 Инструмент разработан и протестирован на **Arch Linux**. Для работы ядра сети требуются официальные модули AmneziaWG:
 
 ```bash
-yay -S amneziawg-dkms amneziawg-tools
+sudo yay -S amneziawg-dkms amneziawg-tools
 ```
 
 ## Развертывание
@@ -26,7 +26,7 @@ yay -S amneziawg-dkms amneziawg-tools
 1. **Клонируйте репозиторий:**
 ```bash
 git clone https://github.com/paranoidalwate/fsociety_vpn.git
-cd fsociety-vpn/src
+cd fsociety_vpn/src
 ```
 2. **Запустите установщик:**
 ```bash
@@ -53,8 +53,8 @@ fsociety discord
 # Проверка IP-адреса внутри туннеля
 fsociety curl ifconfig.me
 
-# Изолированный профиль браузера (рекомендуется)
-fsociety firefox -P VPN
+# Изолированная сессия браузера (рекомендуется)
+fsociety --isolate firefox
 ```
 
 ## Структура проекта
