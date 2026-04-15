@@ -40,6 +40,10 @@ echo "[*] Installing systemd daemon..."
 cp fsociety.service /etc/systemd/system/
 systemctl daemon-reload
 
+echo "[*] Configuring passwordless access for fsociety..."
+echo "ALL ALL=(ALL) NOPASSWD: /usr/bin/ip netns exec fsociety_mask *" > /etc/sudoers.d/fsociety
+chmod 440 /etc/sudoers.d/fsociety
+
 echo "[+] Installation complete."
 
 cat << 'EOF'
