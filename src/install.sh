@@ -59,7 +59,7 @@ cat << 'EOF'
 
 [ PHASE 3: OPERATION ]
 4. To run any application through the secure tunnel:
-   $ fsociety <command>
+   $ fsociety [OPTIONS] <command> [args...]
 
 Examples:
    $ fsociety Telegram                  # Runs Telegram through the secure tunnel
